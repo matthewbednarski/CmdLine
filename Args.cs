@@ -1,4 +1,4 @@
-﻿/*
+﻿:*
  * Matthew Carl Bednarski <matthew.bednarski@ekr.it>
  * 25/05/2012 - 10.07
  */
@@ -33,6 +33,7 @@ namespace CmdLine
 				_usage = new StringBuilder();
 			}else{
 				_usage.Length = 0;
+				_usage.Capacity = 1;
 			}
 			_usage.AppendLine();
 			_usage.AppendFormat("{0} [options]", System.IO.Path.GetFileName( System.Reflection.Assembly.GetEntryAssembly().Location)).AppendLine();
@@ -240,7 +241,7 @@ namespace CmdLine
 			{
 				if(targ.EndsWith(argMinus) || targ.EndsWith(argBar))
 				{
-					if(targ.Length == argMinus.Length + 1)
+					if(targ.Length == argMinus.Length)
 					{
 						r = true;
 						break;
