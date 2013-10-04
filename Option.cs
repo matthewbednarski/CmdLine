@@ -34,10 +34,40 @@ namespace CmdLine
 			set {  this.isFlag = value; }
 		}
 		string default_value;
-		public string Default_value {
+		public string DefaultValue {
 			get { return default_value; }
 		}
-		
+		string actual_value;
+		public string ActualValue {
+			get {
+				if(actual_value == null && default_value != null)
+				{
+					return default_value;
+				}
+				return actual_value;
+			}
+			set {
+				actual_value = value;
+			}
+		}
+		public bool ActualValue_IsFlag
+		{
+			get{
+				bool r = false;
+				if(!String.IsNullOrEmpty(this.actual_value))
+				{
+					if(this.actual_value.ToLower().Equals(Boolean.TrueString.ToLower()) || this.actual_value.ToLower().Equals(Boolean.FalseString.ToLower()))
+					{
+						r = true;
+					}
+				}
+				return r;
+			}
+		}
+		public bool HasActualValue
+		{
+			get{ return ( !String.IsNullOrEmpty(actual_value) );}
+		}
 		public Option(string name, bool isFlag = false):this(name[0], name, "", isFlag, "")
 		{
 		}
@@ -67,9 +97,9 @@ namespace CmdLine
 				{
 					return String.Format("    -{0}, --{1}    {2}.", this.Short_name, this.Name, this.Description);
 				}
-				else if(!String.IsNullOrEmpty(this.Default_value))
+				else if(!String.IsNullOrEmpty(this.DefaultValue))
 				{
-					return String.Format("    -{0} [value], --{1}=[value]    {2}. Default: {3}", this.Short_name, this.Name, this.Description, this.Default_value);
+					return String.Format("    -{0} [value], --{1}=[value]    {2}. Default: {3}", this.Short_name, this.Name, this.Description, this.DefaultValue);
 				}
 				else
 				{
@@ -80,9 +110,9 @@ namespace CmdLine
 				{
 					return String.Format("    -{0}    {1}.", this.Short_name, this.Description);
 				}
-				else if(!String.IsNullOrEmpty(this.Default_value))
+				else if(!String.IsNullOrEmpty(this.DefaultValue))
 				{
-					return String.Format("    -{0} [value]    {1}. Default: {2}", this.Short_name, this.Description, this.Default_value);
+					return String.Format("    -{0} [value]    {1}. Default: {2}", this.Short_name, this.Description, this.DefaultValue);
 				}
 				else
 				{
@@ -117,13 +147,21 @@ namespace CmdLine
 				{
 					return args.ParamsDict[option.Short_name.ToString()];
 				}else{
-					return option.Default_value;
+					return option.DefaultValue;
 				}
 			}
 		}
 		public Object GetOptionValue(Args args)
 		{
 			return GetValue(args, this);
+		}
+		public Boolean GetOptionValueAsFlag(Args args)
+		{
+			return (bool)GetValue(args, this);
+		}
+		public String GetOptionValueAsString(Args args)
+		{
+			return GetValue(args, this).ToString();
 		}
 	}
 	

@@ -1,4 +1,4 @@
-﻿:*
+﻿/**
  * Matthew Carl Bednarski <matthew.bednarski@ekr.it>
  * 25/05/2012 - 10.07
  */
@@ -67,7 +67,8 @@ namespace CmdLine
 				_usage.AppendLine();
 			}
 			_usage.AppendLine();
-			return _usage.ToString();
+			string r = _usage.ToString();
+			return r;
 		}
 		#endregion //Command Line Options
 		
@@ -97,6 +98,18 @@ namespace CmdLine
 				if(ParamsDict.ContainsKey(index))
 				{
 					return ParamsDict[index];
+				}else{
+					return "";
+				}
+			}
+		}
+		public String this [int index]
+		{
+			get{
+				
+				if(ArgsList != null && ArgsList.Count > index)
+				{
+					return ArgsList[index];
 				}else{
 					return "";
 				}
@@ -149,13 +162,72 @@ namespace CmdLine
 				}
 			}
 		}
+		public Option GetOption(char where)
+		{
+			return GetOption(where.ToString());
+		}
+		public Option GetOption(String where)
+		{
+			IList<Option> options = this.GetOptions(where);
+			if(options.Count > 0)
+			{
+				return options[0];
+			}else {
+				return null;
+			}
+		}
+		public IList<Option> GetOptions(String where)
+		{
+			List<Option> options = new List<Option>();
+			foreach(Option o in this.Options)
+			{
+				if(o.Name.ToLower().Equals(where.ToLower()))
+				{
+					options.Add(o);
+				} else if(where.Length == 1)
+				{
+					if(o.Short_name != null && where[0].Equals(o.Short_name))
+					{
+						options.Add(o);
+					}
+				}
+			}
+			foreach(Option o in this.Options)
+			{
+				if(o.Name.ToLower().Contains(where.ToLower()))
+				{
+					options.Add(o);
+				} else if(where.Length == 1)
+				{
+					if(o.Short_name != null)
+					{
+						string tocomp = o.Short_name.ToString();
+						if(where.ToLower()[0].Equals(tocomp.ToLower()))
+						{
+							options.Add(o);
+						}
+					}
+				}
+			}
+			return options;
+		}
+		public void AddOption(Option to_add)
+		{
+			this.Options.Add(to_add);
+			Object val = to_add.GetOptionValue(this);
+			if(val != null)
+			{
+
+				to_add.ActualValue = to_add.GetOptionValue(this).ToString();
+			}
+		}
 		
 		private static string ArgAsParameter(string arg)
 		{
 			string r = arg;
 			r = r.TrimStart('-','/');
 			if(r.Contains("=")){
-				r = r.Split(new char[]{'='}, 1)[0];
+				r = r.Split(new char[]{'='}, 2)[0];
 			}
 			return r;
 		}
@@ -246,11 +318,18 @@ namespace CmdLine
 						r = true;
 						break;
 					}
-				}else if(targ.Equals(arg))
+				}
+				if(targ.Equals(arg))
 				{
 					r = true;
 					break;
-				}else if(targ.TrimStart(new char[]{'-', '/'}).StartsWith(arg.TrimStart(new char[]{'-', '/'} ) + "=" ) )
+				}
+				if(targ.TrimStart(new char[]{'-', '/'}).StartsWith(arg.TrimStart(new char[]{'-', '/'} ) + "=" ) )
+				{
+					r = true;
+					break;
+				}
+				if(targ.TrimStart(new char[]{'-', '/'}).Equals(arg.TrimStart(new char[]{'-', '/'} ) ) )
 				{
 					r = true;
 					break;
@@ -262,6 +341,19 @@ namespace CmdLine
 		{
 			bool r = false;
 			r = ArgUsed(this.args_original, arg);
+			return r;
+		}
+		public bool ArgUsed(Option option)
+		{
+			bool r = false;
+			if(option.Short_name != null)
+			{
+				r = ArgUsed(option.Short_name.ToString());
+			}
+			if(!r)
+			{
+				r = ArgUsed(option.Name);
+			}
 			return r;
 		}
 	}
