@@ -17,7 +17,7 @@ public static void Main(string[] arguments)
   Option help = args.GetOption('?');
   if(help.ActualValue_AsFlag)
   {
-    Console.WriteLine(args.Usage); 
+    Console.WriteLine(args.Usage());
     return;
   }
 
