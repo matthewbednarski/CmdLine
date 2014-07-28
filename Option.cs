@@ -1,17 +1,15 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: ekr
+ * User: Matthew Bednarski
  * Date: 23/08/2013
  * Time: 17:45
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
 
 namespace CmdLine
 {
 	/// <summary>
-	/// A class for managing CMD line Args options
+	/// A class for managing CMD line argument options
 	/// </summary>
 	public class Option
 	{
@@ -56,17 +54,29 @@ namespace CmdLine
 				bool r = false;
 				if(!String.IsNullOrEmpty(this.actual_value))
 				{
-					if(this.actual_value.ToLower().Equals(Boolean.TrueString.ToLower()) || this.actual_value.ToLower().Equals(Boolean.FalseString.ToLower()))
-					{
-						r = true;
-					}
+          bool tmp = false;
+          if(Boolean.TryParse(this.actual_value, out tmp))
+          {
+            r = true;
+          }
+				}
+				return r;
+			}
+		}
+		public bool ActualValue_AsFlag
+		{
+			get{
+				bool r = false;
+				if(!String.IsNullOrEmpty(this.actual_value))
+				{
+          Boolean.TryParse(this.actual_value, out r);
 				}
 				return r;
 			}
 		}
 		public bool HasActualValue
 		{
-			get{ return ( !String.IsNullOrEmpty(actual_value) );}
+			get{ return ( !String.IsNullOrEmpty(this.actual_value) );}
 		}
 		public Option(string name, bool isFlag = false):this(name[0], name, "", isFlag, "")
 		{
