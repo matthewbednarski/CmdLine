@@ -139,7 +139,7 @@ namespace CmdLine
             string key = ArgAsParameter(args[i]);
             string val =  ArgParameterValue(args, i);
             ParamsDict.Add(key, val);
-          }catch(Exception ex)
+          }catch(Exception)
           {
             Console.WriteLine("{0} : -> : {1}",ArgAsParameter( args[i]), ArgParameterHasValue(args, i));
           }
@@ -150,7 +150,7 @@ namespace CmdLine
             string key = ArgAsParameter(args[i]);
             string val =  Convert.ToString(true);
             ParamsDict.Add(key, val);
-          }catch(Exception ex)
+          }catch(Exception)
           {
             Console.WriteLine("{0} : -> : {1}",ArgAsParameter( args[i]), ArgParameterHasValue(args, i));
           }
@@ -181,7 +181,7 @@ namespace CmdLine
           options.Add(o);
         } else if(where.Length == 1)
         {
-          if(o.Short_name != null && where[0].Equals(o.Short_name))
+          if(o.Short_name != '\0' && where[0].Equals(o.Short_name))
           {
             options.Add(o);
           }
@@ -194,7 +194,7 @@ namespace CmdLine
           options.Add(o);
         } else if(where.Length == 1)
         {
-          if(o.Short_name != null)
+          if(o.Short_name != '\0')
           {
             string tocomp = o.Short_name.ToString();
             if(where.ToLower()[0].Equals(tocomp.ToLower()))
@@ -340,7 +340,7 @@ namespace CmdLine
     public bool ArgUsed(Option option)
     {
       bool r = false;
-      if(option.Short_name != null)
+      if(option.Short_name != '\0')
       {
         r = ArgUsed(option.Short_name.ToString());
       }
