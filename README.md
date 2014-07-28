@@ -9,12 +9,12 @@ command line arguments parser utilities
 <pre>
 public static void Main(string[] arguments)
 {
-  Option o1 = new Option('f', "file", "File parameter.", false );
-  Option flag1 = new Option('v', "verbose", "Print verbose output." , true, "FALSE");
+  CmdLine.Option o1 = new CmdLine.Option('f', "file", "File parameter.", false );
+  CmdLine.Option flag1 = new CmdLine.Option('v', "verbose", "Print verbose output." , true, "FALSE");
 
-  CmdLine.Args args = new CmdLine.Args(arguments, new Option[]{o1, flag1});
+  CmdLine.Args args = new CmdLine.Args(arguments, new CmdLine.Option[]{o1, flag1});
 
-  Option help = args.GetOption('?');
+  CmdLine.Option help = args.GetOption('?');
   if(help.ActualValue_AsFlag)
   {
     Console.WriteLine(args.Usage());
